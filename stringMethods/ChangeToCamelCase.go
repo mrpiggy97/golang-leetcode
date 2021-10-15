@@ -22,13 +22,14 @@ func ChangeToCamelCase(stringInstance string) string {
 	}
 
 	for index, word := range stringSlice {
-		var byteSlice []byte = []byte(word)
-		var firstByteIsUpper bool = IsUpper(byteSlice[0])
-		if !firstByteIsUpper {
-			byteSlice[0] = byte(int(byteSlice[0]) + 32)
+		var byteWord []byte = []byte(word)
+		if index > 0 {
+			var letterIsUpper bool = IsUpper(byteWord[0])
+			if !letterIsUpper {
+				byteWord[0] = byte(int(byteWord[0]) - 32)
+			}
 		}
-		stringSlice[index] = string(byteSlice)
-		finalString = finalString + stringSlice[index]
+		finalString = finalString + string(byteWord)
 	}
 
 	return finalString
