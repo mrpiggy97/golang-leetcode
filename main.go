@@ -30,4 +30,8 @@ func main() {
 	fmt.Printf("%v\n", arithmetic.DoubleTheAge(36, 7))
 	fmt.Printf("%v\n", stringMethods.CompareEndOfString("", ""))
 	fmt.Printf("%v\n", stringMethods.ChangeToCamelCase("the-stealth-warrior"))
+	fmt.Printf("%v\n", arithmetic.Race(720, 850, 70))
+	fmt.Printf("%v\n", stringMethods.CheckIfUpperCase("CCsMO LA MADRE"))
+	fmt.Printf("%v\n", arithmetic.SumMembers(195))
+	fmt.Printf("%v\n", stringMethods.DuplicateEncode("fAbian"))
 }
