@@ -41,6 +41,31 @@ func testBasicFunctionality(testCase *testing.T) {
 	}
 }
 
+func testSearch(testCase *testing.T) {
+	var firstTree *trees.TreeNode = trees.NewTreeNode()
+	var firstNode int = 33
+	var secondNode int = 40
+	var thirdNode int = 20
+	var fourthNode int = 25
+	var fifthNode int = 35
+
+	var nodesToSearch []int = []int{firstNode, secondNode, thirdNode, fourthNode, fifthNode}
+
+	firstTree.Insert(firstNode)
+	firstTree.Insert(secondNode)
+	firstTree.Insert(thirdNode)
+	firstTree.Insert(fourthNode)
+	firstTree.Insert(fifthNode)
+
+	for _, node := range nodesToSearch {
+		var result *trees.Node = firstTree.Search(node)
+		if result.Value != node {
+			testCase.Errorf("expected %d, got %d instead", node, result.Value)
+		}
+	}
+}
+
 func TestMyTree(testCase *testing.T) {
 	testCase.Run("action=tree-basic-functionality", testBasicFunctionality)
+	testCase.Run("action=tree-search", testSearch)
 }
