@@ -18,5 +18,5 @@ func main() {
 	myTree.Insert(2)
 	myTree.Insert(9)
 	var result []int = myTree.InOrderTraverse()
-	fmt.Println("result ", result)
+	fmt.Println("result ", result[0])
 }

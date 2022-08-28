@@ -1,6 +1,7 @@
 package trees_test
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/mrpiggy97/golang-leetcode/trees"
@@ -82,6 +83,7 @@ func testInOrderTraverse(testCase *testing.T) {
 	myTree.Insert(9)
 	myTree.Insert(4)
 	var nodesInOrder []int = myTree.InOrderTraverse()
+	fmt.Println(nodesInOrder)
 	var expectedOrder []int = []int{2, 4, 7, 8, 9, 11, 12, 19, 20, 21, 29, 33, 40, 50}
 
 	for index := range nodesInOrder {

@@ -130,10 +130,17 @@ func (treeNode *TreeNode) InOrderTraverse() []int {
 		return []int{}
 	}
 
-	var nodes []int = treeNode.getNodesInOrder(treeNode.Root.Left)
-	nodes = append(nodes, treeNode.Root.Value)
-	var rightNodes []int = treeNode.getNodesInOrder(treeNode.Root.Right)
-	nodes = append(nodes, rightNodes...)
+	var nodes []int = []int{}
+
+	if treeNode.Root.Left != nil {
+		nodes = treeNode.getNodesInOrder(treeNode.Root.Left)
+		nodes = append(nodes, treeNode.Root.Value)
+	}
+
+	if treeNode.Root.Right != nil {
+		var rightNodes []int = treeNode.getNodesInOrder(treeNode.Root.Right)
+		nodes = append(nodes, rightNodes...)
+	}
 	return nodes
 }
 
