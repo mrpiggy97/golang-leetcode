@@ -2,29 +2,58 @@ package trees
 
 import (
 	"fmt"
-
-	"github.com/mrpiggy97/golang-leetcode/arrays"
 )
 
 type Node struct {
-	Left      *Node
-	Right     *Node
-	Value     int
-	IsVisited bool
+	Left  *Node
+	Right *Node
+	Value int
 }
 
 func NewNode(value int) *Node {
 	return &Node{
-		Value:     value,
-		Right:     nil,
-		Left:      nil,
-		IsVisited: false,
+		Value: value,
+		Right: nil,
+		Left:  nil,
 	}
 }
 
 type TreeNode struct {
-	Root         *Node
-	nodesToVisit []int
+	Root *Node
+}
+
+func (treeNode *TreeNode) getIndexOfValue(value int, slice []int) int {
+	var correctIndex int = -1
+	for index, val := range slice {
+		if val == value {
+			correctIndex = index
+		}
+	}
+	return correctIndex
+}
+
+func (treeNode *TreeNode) insertAt(index int, newValue int, slice []int) []int {
+	var values []int = []int{}
+	if index == 0 {
+		values = append(values, newValue)
+		values = append(values, slice...)
+	} else {
+		var valuesUpToIndex []int = []int{}
+		var valuesFromIndexOnward []int = []int{}
+		for i := 0; i < index; i++ {
+			valuesUpToIndex = append(valuesUpToIndex, slice[i])
+		}
+		for a := index; a < len(slice); a++ {
+			valuesFromIndexOnward = append(valuesFromIndexOnward, slice[a])
+		}
+		fmt.Println(slice)
+		valuesUpToIndex = append(valuesUpToIndex, newValue)
+		values = append(values, valuesUpToIndex...)
+		var message string = fmt.Sprintf(" new value %d", newValue)
+		fmt.Println(slice, message)
+		values = append(values, valuesFromIndexOnward...)
+	}
+	return values
 }
 
 func (treeNode *TreeNode) Insert(value int) {
@@ -96,32 +125,31 @@ func (treeNode *TreeNode) Search(value int) *Node {
 
 func (treeNode *TreeNode) getNodesInOrder(node *Node) []int {
 	var nodesToVisit []*Node = []*Node{node}
-	var nodesInOrder *arrays.Array[int] = arrays.NewArray[int]()
-	nodesInOrder.Append(&node.Value)
+	var nodesInOrder []int = []int{node.Value}
 
 	for i := 0; i < len(nodesToVisit); i++ {
 		var currentNode *Node = nodesToVisit[i]
-		var currentIndex int = *nodesInOrder.GetIndexOfValue(currentNode.Value)
+		var currentIndex int = treeNode.getIndexOfValue(currentNode.Value, nodesInOrder)
 		var leftNode *Node = currentNode.Left
 		var rightNode *Node = currentNode.Right
 
 		if leftNode != nil {
 			nodesToVisit = append(nodesToVisit, leftNode)
-			nodesInOrder.InsertAt(currentIndex, &leftNode.Value)
-			currentIndex = *nodesInOrder.GetIndexOfValue(currentNode.Value)
+			nodesInOrder = treeNode.insertAt(currentIndex, leftNode.Value, nodesInOrder)
+			currentIndex = treeNode.getIndexOfValue(currentNode.Value, nodesInOrder)
 		}
 		if rightNode != nil {
 			nodesToVisit = append(nodesToVisit, rightNode)
 			currentIndex = currentIndex + 1
-			if currentIndex == *nodesInOrder.Length {
-				nodesInOrder.Append(&rightNode.Value)
+			if currentIndex == len(nodesInOrder) {
+				nodesInOrder = append(nodesInOrder, rightNode.Value)
 			} else {
-				nodesInOrder.InsertAt(currentIndex, &rightNode.Value)
+				nodesInOrder = treeNode.insertAt(currentIndex, rightNode.Value, nodesInOrder)
 			}
 		}
 	}
 
-	return nodesInOrder.GetSlice()
+	return nodesInOrder
 }
 
 func (treeNode *TreeNode) InOrderTraverse() []int {
@@ -146,7 +174,6 @@ func (treeNode *TreeNode) InOrderTraverse() []int {
 
 func NewTreeNode() *TreeNode {
 	return &TreeNode{
-		Root:         nil,
-		nodesToVisit: []int{},
+		Root: nil,
 	}
 }
