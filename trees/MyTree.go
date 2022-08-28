@@ -119,9 +119,6 @@ func (treeNode *TreeNode) getNodesInOrder(node *Node) []int {
 				nodesInOrder.InsertAt(currentIndex, &rightNode.Value)
 			}
 		}
-		for _, val := range nodesToVisit {
-			fmt.Println(val.Value)
-		}
 	}
 
 	return nodesInOrder.GetSlice()

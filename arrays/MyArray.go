@@ -23,7 +23,6 @@ func (array *Array[T]) GetIndexOfValue(value T) *int {
 	for index := 0; index < *array.Length; index++ {
 		var element T = *array.Get(index)
 		if element == value {
-			fmt.Println("element and index", index, element)
 			correctIndex = &index
 			break
 		}
