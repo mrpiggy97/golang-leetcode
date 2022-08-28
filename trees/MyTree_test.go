@@ -65,7 +65,36 @@ func testSearch(testCase *testing.T) {
 	}
 }
 
+func testInOrderTraverse(testCase *testing.T) {
+	var myTree *trees.TreeNode = trees.NewTreeNode()
+	myTree.Insert(20)
+	myTree.Insert(19)
+	myTree.Insert(21)
+	myTree.Insert(11)
+	myTree.Insert(40)
+	myTree.Insert(7)
+	myTree.Insert(12)
+	myTree.Insert(33)
+	myTree.Insert(50)
+	myTree.Insert(29)
+	myTree.Insert(2)
+	myTree.Insert(8)
+	myTree.Insert(9)
+	myTree.Insert(4)
+	var nodesInOrder []int = myTree.InOrderTraverse()
+	var expectedOrder []int = []int{2, 4, 7, 8, 9, 11, 12, 19, 20, 21, 29, 33, 40, 50}
+
+	for index := range nodesInOrder {
+		var node int = nodesInOrder[index]
+		var expectedNode int = expectedOrder[index]
+		if node != expectedNode {
+			testCase.Errorf("node %d is not equal to %d", node, expectedNode)
+		}
+	}
+}
+
 func TestMyTree(testCase *testing.T) {
 	testCase.Run("action=tree-basic-functionality", testBasicFunctionality)
 	testCase.Run("action=tree-search", testSearch)
+	testCase.Run("action=test-in-order-traverse", testInOrderTraverse)
 }
