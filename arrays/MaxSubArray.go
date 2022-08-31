@@ -2,7 +2,8 @@ package arrays
 
 func GetSliceWithHighestSum(slices [][]int) ([]int, int) {
 	var sliceWithHighestValue []int = []int{}
-	var highestSum int = 0
+	// this is the lowest value an int can be in golang
+	var highestSum int = -2147483648
 	for _, slice := range slices {
 		var sum int = 0
 		for _, value := range slice {
