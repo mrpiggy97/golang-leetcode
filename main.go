@@ -3,23 +3,12 @@ package main
 import (
 	"fmt"
 
-	"github.com/mrpiggy97/golang-leetcode/trees"
+	"github.com/mrpiggy97/golang-leetcode/arrays"
 )
 
 func main() {
-	var myTree *trees.TreeNode = trees.NewTreeNode()
-	myTree.Insert(20)
-	myTree.Insert(19)
-	myTree.Insert(11)
-	myTree.Insert(7)
-	myTree.Insert(12)
-	myTree.Insert(4)
-	myTree.Insert(8)
-	myTree.Insert(2)
-	myTree.Insert(9)
-	myTree.Insert(55)
-	myTree.Insert(33)
-	myTree.Insert(40)
-	var result []int = myTree.InOrderTraverse()
-	fmt.Println("result ", result)
+	var i []int = []int{1, 3, 5, 6, 0, 0}
+	var t []int = []int{4, 7}
+	arrays.Merge(i, len(i), t, len(t))
+	fmt.Println(i)
 }
