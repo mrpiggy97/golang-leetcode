@@ -12,19 +12,26 @@ func getIndexes(prices []int) []int {
 	return indexes
 }
 
+func getLowestValueBeforeEndIndex(endIndex int, priceSlice []int) int {
+	if endIndex == 0 {
+		return -1
+	}
+	var lowestValue int = priceSlice[endIndex]
+	for index, value := range priceSlice {
+		if index == endIndex {
+			break
+		}
+		if value < lowestValue {
+			lowestValue = value
+		}
+	}
+	return lowestValue
+}
+
 func MaxProfit(prices []int) int {
 	var indexes []int = getIndexes(prices)
-	var profitsLowToHigh []int = make([]int, len(indexes))
-	copy(profitsLowToHigh, indexes)
 	var profitsHighToLow []int = make([]int, len(indexes))
 	copy(profitsHighToLow, indexes)
-	sort.Slice(profitsLowToHigh, func(firstIndex, secondIndex int) bool {
-		var indexVal1 int = profitsLowToHigh[firstIndex]
-		var indexVal2 int = profitsLowToHigh[secondIndex]
-		var val1 int = prices[indexVal1]
-		var val2 int = prices[indexVal2]
-		return val1 < val2
-	})
 	sort.Slice(profitsHighToLow, func(firstIndex, secondIndex int) bool {
 		var indexVal1 int = profitsHighToLow[firstIndex]
 		var indexVal2 int = profitsHighToLow[secondIndex]
@@ -35,16 +42,11 @@ func MaxProfit(prices []int) int {
 
 	var highestProfit int = 0
 	var currentProfit int = 0
-	for index := range profitsHighToLow {
-		var highIndex int = profitsHighToLow[index]
+	for _, highIndex := range profitsHighToLow {
 		var highValue int = prices[highIndex]
-		for i := range profitsLowToHigh {
-			var lowIndex int = profitsLowToHigh[i]
-			var lowValue int = prices[lowIndex]
-			if lowIndex < highIndex && highValue > lowValue {
-				currentProfit = highValue - lowValue
-				break
-			}
+		var lowestValue int = getLowestValueBeforeEndIndex(highIndex, prices)
+		if lowestValue > -1 {
+			currentProfit = highValue - lowestValue
 		}
 		if currentProfit > highestProfit {
 			highestProfit = currentProfit
