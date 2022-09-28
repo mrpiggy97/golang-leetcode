@@ -1,7 +1,5 @@
 package queue
 
-import "fmt"
-
 type Node struct {
 	Val   rune
 	Index int
@@ -35,6 +33,46 @@ func (queue *Queue) FillQueue(str string) {
 	}
 }
 
+func RemoveNodes(queue *Queue, openerIndex, closureIndex int) *Queue {
+	var currentNode *Node = queue.Head
+	var index int = 0
+	var newQueue *Queue = &Queue{
+		Head:   nil,
+		Bottom: nil,
+	}
+	for currentNode != nil {
+		if currentNode.Index == openerIndex || currentNode.Index == closureIndex {
+			currentNode = currentNode.Next
+			if currentNode == nil {
+				break
+			}
+		}
+		if currentNode.Index != openerIndex && currentNode.Index != closureIndex {
+			if index == 0 {
+				var newNode = &Node{
+					Val:   currentNode.Val,
+					Index: index,
+					Next:  nil,
+				}
+				newQueue.Head = newNode
+				newQueue.Bottom = newNode
+			}
+			if index > 0 {
+				var newNode = &Node{
+					Val:   currentNode.Val,
+					Index: index,
+					Next:  nil,
+				}
+				newQueue.Bottom.Next = newNode
+				newQueue.Bottom = newQueue.Bottom.Next
+			}
+			index = index + 1
+			currentNode = currentNode.Next
+		}
+	}
+	return newQueue
+}
+
 func ExpectedValue(opener, closure rune) bool {
 	var expectedValue rune
 	switch opener {
@@ -54,25 +92,6 @@ func IsOpener(str rune) bool {
 	} else {
 		return false
 	}
-}
-
-func SliceContains(index int, indexes ...int) bool {
-	for _, value := range indexes {
-		if value == index {
-			return true
-		}
-	}
-	return false
-}
-
-func removeItemsFromStr(str string, indexes ...int) string {
-	var newStr string = ""
-	for i, subStr := range str {
-		if !SliceContains(i, indexes...) {
-			newStr = fmt.Sprintf("%s%s", string(newStr), string(subStr))
-		}
-	}
-	return newStr
 }
 
 func IsValid(str string) bool {
@@ -117,11 +136,10 @@ func IsValid(str string) bool {
 						return false
 					}
 					if closureIsValid {
-						str = removeItemsFromStr(str, currentNode.Index, currentNode.Next.Index)
-						if len(str) == 0 {
+						queue = RemoveNodes(queue, currentNode.Index, currentNode.Next.Index)
+						if queue.Head == nil {
 							break
 						}
-						queue.FillQueue(str)
 						currentNode = queue.Head
 					}
 				}
