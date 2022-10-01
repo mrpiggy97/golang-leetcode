@@ -47,11 +47,8 @@ func (treeNode *TreeNode) insertAt(index int, newValue *Node, slice []*Node) []*
 		for a := index; a < len(slice); a++ {
 			valuesFromIndexOnward = append(valuesFromIndexOnward, slice[a])
 		}
-		fmt.Println(slice)
 		valuesUpToIndex = append(valuesUpToIndex, newValue)
 		values = append(values, valuesUpToIndex...)
-		var message string = fmt.Sprintf(" new value %d", newValue.Value)
-		fmt.Println(slice, message)
 		values = append(values, valuesFromIndexOnward...)
 	}
 	return values
@@ -157,6 +154,43 @@ func (treeNode *TreeNode) getNodesInOrder(node *Node) []int {
 	return valuesOfNodesInOrder
 }
 
+func (treeNode *TreeNode) getNodesInPreOrder(node *Node) []int {
+	var nodesInPostOrder []*Node = []*Node{node}
+	var nodesToVisit []*Node = []*Node{node}
+	for index := 0; index < len(nodesToVisit); index++ {
+		var currentNode *Node = nodesToVisit[index]
+		var indexOfCurrentNode int = treeNode.getIndexOfValue(currentNode, nodesInPostOrder)
+		var leftNode *Node = currentNode.Left
+		var rightNode *Node = currentNode.Right
+		var isEndIndex bool = indexOfCurrentNode == len(nodesInPostOrder)-1
+		if leftNode != nil {
+			if isEndIndex {
+				nodesInPostOrder = append(nodesInPostOrder, leftNode)
+				nodesToVisit = append(nodesToVisit, leftNode)
+			} else {
+				indexOfCurrentNode = indexOfCurrentNode + 1
+				nodesInPostOrder = treeNode.insertAt(indexOfCurrentNode, leftNode, nodesInPostOrder)
+				nodesToVisit = append(nodesToVisit, leftNode)
+			}
+		}
+		indexOfCurrentNode = indexOfCurrentNode + 1
+		if rightNode != nil {
+			if isEndIndex {
+				nodesInPostOrder = append(nodesInPostOrder, rightNode)
+				nodesToVisit = append(nodesToVisit, rightNode)
+			} else {
+				nodesInPostOrder = treeNode.insertAt(indexOfCurrentNode, rightNode, nodesInPostOrder)
+				nodesToVisit = append(nodesToVisit, rightNode)
+			}
+		}
+	}
+	var nodes []int = make([]int, len(nodesInPostOrder))
+	for index, node := range nodesInPostOrder {
+		nodes[index] = node.Value
+	}
+	return nodes
+}
+
 func (treeNode *TreeNode) InOrderTraverse() []int {
 	if treeNode.Root == nil {
 		fmt.Println("tree is empty")
@@ -175,6 +209,23 @@ func (treeNode *TreeNode) InOrderTraverse() []int {
 	if treeNode.Root.Right != nil {
 		var rightNodes []int = treeNode.getNodesInOrder(treeNode.Root.Right)
 		nodes = append(nodes, rightNodes...)
+	}
+	return nodes
+}
+
+func (treeNode *TreeNode) PreOrderTraverse() []int {
+	if treeNode.Root == nil {
+		return []int{}
+	}
+	var nodes []int = []int{treeNode.Root.Value}
+	var leftNode *Node = treeNode.Root.Left
+	var rightNode *Node = treeNode.Root.Right
+
+	if leftNode != nil {
+		nodes = append(nodes, treeNode.getNodesInPreOrder(leftNode)...)
+	}
+	if rightNode != nil {
+		nodes = append(nodes, treeNode.getNodesInPreOrder(rightNode)...)
 	}
 	return nodes
 }

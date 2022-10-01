@@ -95,8 +95,35 @@ func testInOrderTraverse(testCase *testing.T) {
 	}
 }
 
+func testPreOrderTraverse(testCase *testing.T) {
+	var myTree *trees.TreeNode = trees.NewTreeNode()
+	myTree.Insert(20)
+	myTree.Insert(19)
+	myTree.Insert(21)
+	myTree.Insert(11)
+	myTree.Insert(40)
+	myTree.Insert(7)
+	myTree.Insert(12)
+	myTree.Insert(33)
+	myTree.Insert(50)
+	myTree.Insert(29)
+	myTree.Insert(2)
+	myTree.Insert(8)
+	myTree.Insert(9)
+	myTree.Insert(4)
+	var nodesInPreOrder []int = myTree.PreOrderTraverse()
+	var expectedResult []int = []int{20, 19, 11, 7, 2, 4, 8, 9, 12, 21, 40, 33, 29, 50}
+	fmt.Println("nodes in pre order ", nodesInPreOrder)
+	for index, node := range nodesInPreOrder {
+		if node != expectedResult[index] {
+			testCase.Errorf("expected %d to be %d", node, expectedResult[index])
+		}
+	}
+}
+
 func TestMyTree(testCase *testing.T) {
 	testCase.Run("action=tree-basic-functionality", testBasicFunctionality)
 	testCase.Run("action=tree-search", testSearch)
 	testCase.Run("action=test-in-order-traverse", testInOrderTraverse)
+	testCase.Run("action=test-pre-order-traverse", testPreOrderTraverse)
 }
