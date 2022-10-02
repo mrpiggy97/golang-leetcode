@@ -8,7 +8,7 @@ import (
 )
 
 func testBasicFunctionality(testCase *testing.T) {
-	var firstTree *trees.TreeNode = trees.NewTreeNode()
+	var firstTree *trees.Tree = trees.NewTree()
 	var firstNode int = 33
 	var secondNode int = 40
 	var thirdNode int = 20
@@ -21,29 +21,29 @@ func testBasicFunctionality(testCase *testing.T) {
 	firstTree.Insert(fourthNode)
 	firstTree.Insert(fifthNode)
 
-	if firstTree.Root.Value != firstNode {
-		testCase.Errorf("expected %d, got %d instead", firstNode, firstTree.Root.Value)
+	if firstTree.Root.Val != firstNode {
+		testCase.Errorf("expected %d, got %d instead", firstNode, firstTree.Root.Val)
 	}
 
-	if firstTree.Root.Left.Value != thirdNode {
-		testCase.Errorf("expected %d, got %d instead", thirdNode, firstTree.Root.Left.Value)
+	if firstTree.Root.Left.Val != thirdNode {
+		testCase.Errorf("expected %d, got %d instead", thirdNode, firstTree.Root.Left.Val)
 	}
 
-	if firstTree.Root.Right.Value != secondNode {
-		testCase.Errorf("expected %d, got %d instead", secondNode, firstTree.Root.Right.Value)
+	if firstTree.Root.Right.Val != secondNode {
+		testCase.Errorf("expected %d, got %d instead", secondNode, firstTree.Root.Right.Val)
 	}
 
-	if firstTree.Root.Left.Right.Value != fourthNode {
-		testCase.Errorf("expected %d, got %d instead", fourthNode, firstTree.Root.Left.Right.Value)
+	if firstTree.Root.Left.Right.Val != fourthNode {
+		testCase.Errorf("expected %d, got %d instead", fourthNode, firstTree.Root.Left.Right.Val)
 	}
 
-	if firstTree.Root.Right.Left.Value != fifthNode {
-		testCase.Errorf("expected %d, got %d instead", fifthNode, firstTree.Root.Right.Left.Value)
+	if firstTree.Root.Right.Left.Val != fifthNode {
+		testCase.Errorf("expected %d, got %d instead", fifthNode, firstTree.Root.Right.Left.Val)
 	}
 }
 
 func testSearch(testCase *testing.T) {
-	var firstTree *trees.TreeNode = trees.NewTreeNode()
+	var firstTree *trees.Tree = trees.NewTree()
 	var firstNode int = 33
 	var secondNode int = 40
 	var thirdNode int = 20
@@ -59,15 +59,15 @@ func testSearch(testCase *testing.T) {
 	firstTree.Insert(fifthNode)
 
 	for _, node := range nodesToSearch {
-		var result *trees.Node = firstTree.Search(node)
-		if result.Value != node {
-			testCase.Errorf("expected %d, got %d instead", node, result.Value)
+		var result *trees.TreeNode = firstTree.Search(node)
+		if result.Val != node {
+			testCase.Errorf("expected %d, got %d instead", node, result.Val)
 		}
 	}
 }
 
 func testInOrderTraverse(testCase *testing.T) {
-	var myTree *trees.TreeNode = trees.NewTreeNode()
+	var myTree *trees.Tree = trees.NewTree()
 	myTree.Insert(20)
 	myTree.Insert(19)
 	myTree.Insert(21)
@@ -96,7 +96,7 @@ func testInOrderTraverse(testCase *testing.T) {
 }
 
 func testPreOrderTraverse(testCase *testing.T) {
-	var myTree *trees.TreeNode = trees.NewTreeNode()
+	var myTree *trees.Tree = trees.NewTree()
 	myTree.Insert(20)
 	myTree.Insert(19)
 	myTree.Insert(21)
