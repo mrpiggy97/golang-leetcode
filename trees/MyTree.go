@@ -266,6 +266,42 @@ func (tree *Tree) PostOrderTraverse() []int {
 	return tree.getNodesInPostOrder(tree.Root)
 }
 
+func (tree *Tree) LevelOrderTraverse() [][]int {
+	if tree.Root == nil {
+		return [][]int{}
+	}
+
+	var currentLevel []*TreeNode = []*TreeNode{tree.Root}
+	var level []int = []int{tree.Root.Val}
+	var levels [][]int = [][]int{level}
+	var currentLevelLength int = len(currentLevel)
+
+	for currentLevelLength > 0 {
+		var newLevel []*TreeNode = []*TreeNode{}
+		var newValues []int = []int{}
+		for index := 0; index < currentLevelLength; index++ {
+			var currentNode *TreeNode = currentLevel[index]
+			var leftNode *TreeNode = currentNode.Left
+			var rightNode *TreeNode = currentNode.Right
+
+			if leftNode != nil {
+				newLevel = append(newLevel, leftNode)
+				newValues = append(newValues, leftNode.Val)
+			}
+			if rightNode != nil {
+				newLevel = append(newLevel, rightNode)
+				newValues = append(newValues, rightNode.Val)
+			}
+		}
+		currentLevel = newLevel
+		if len(newValues) > 0 {
+			levels = append(levels, newValues)
+		}
+		currentLevelLength = len(currentLevel)
+	}
+	return levels
+}
+
 func NewTree() *Tree {
 	return &Tree{
 		Root: nil,
