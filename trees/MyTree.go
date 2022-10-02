@@ -155,33 +155,61 @@ func (tree *Tree) getNodesInOrder(node *TreeNode) []int {
 }
 
 func (tree *Tree) getNodesInPreOrder(node *TreeNode) []int {
-	var nodesInPostOrder []*TreeNode = []*TreeNode{node}
+	var nodesInPreOrder []*TreeNode = []*TreeNode{node}
 	var nodesToVisit []*TreeNode = []*TreeNode{node}
 	for index := 0; index < len(nodesToVisit); index++ {
 		var currentNode *TreeNode = nodesToVisit[index]
-		var indexOfCurrentNode int = tree.getIndexOfValue(currentNode, nodesInPostOrder)
+		var indexOfCurrentNode int = tree.getIndexOfValue(currentNode, nodesInPreOrder)
 		var leftNode *TreeNode = currentNode.Left
 		var rightNode *TreeNode = currentNode.Right
-		var isEndIndex bool = indexOfCurrentNode == len(nodesInPostOrder)-1
+		var isEndIndex bool = indexOfCurrentNode == len(nodesInPreOrder)-1
 		if leftNode != nil {
 			if isEndIndex {
-				nodesInPostOrder = append(nodesInPostOrder, leftNode)
+				nodesInPreOrder = append(nodesInPreOrder, leftNode)
 				nodesToVisit = append(nodesToVisit, leftNode)
 			} else {
 				indexOfCurrentNode = indexOfCurrentNode + 1
-				nodesInPostOrder = tree.insertAt(indexOfCurrentNode, leftNode, nodesInPostOrder)
+				nodesInPreOrder = tree.insertAt(indexOfCurrentNode, leftNode, nodesInPreOrder)
 				nodesToVisit = append(nodesToVisit, leftNode)
 			}
 		}
 		indexOfCurrentNode = indexOfCurrentNode + 1
 		if rightNode != nil {
 			if isEndIndex {
-				nodesInPostOrder = append(nodesInPostOrder, rightNode)
+				nodesInPreOrder = append(nodesInPreOrder, rightNode)
 				nodesToVisit = append(nodesToVisit, rightNode)
 			} else {
-				nodesInPostOrder = tree.insertAt(indexOfCurrentNode, rightNode, nodesInPostOrder)
+				nodesInPreOrder = tree.insertAt(indexOfCurrentNode, rightNode, nodesInPreOrder)
 				nodesToVisit = append(nodesToVisit, rightNode)
 			}
+		}
+	}
+	var nodes []int = make([]int, len(nodesInPreOrder))
+	for index, node := range nodesInPreOrder {
+		nodes[index] = node.Val
+	}
+	return nodes
+}
+
+func (tree *Tree) getNodesInPostOrder(node *TreeNode) []int {
+	var nodesInPostOrder []*TreeNode = []*TreeNode{node}
+	var nodesToVisit []*TreeNode = []*TreeNode{node}
+
+	for index := 0; index < len(nodesToVisit); index++ {
+		var currentNode *TreeNode = nodesToVisit[index]
+		var leftNode *TreeNode = currentNode.Left
+		var rightNode *TreeNode = currentNode.Right
+		var currentNodeIndex int = tree.getIndexOfValue(currentNode, nodesInPostOrder)
+
+		if leftNode != nil {
+			nodesInPostOrder = tree.insertAt(currentNodeIndex, leftNode, nodesInPostOrder)
+			nodesToVisit = append(nodesToVisit, leftNode)
+			currentNodeIndex = currentNodeIndex + 1
+		}
+
+		if rightNode != nil {
+			nodesInPostOrder = tree.insertAt(currentNodeIndex, rightNode, nodesInPostOrder)
+			nodesToVisit = append(nodesToVisit, rightNode)
 		}
 	}
 	var nodes []int = make([]int, len(nodesInPostOrder))
@@ -228,6 +256,14 @@ func (tree *Tree) PreOrderTraverse() []int {
 		nodes = append(nodes, tree.getNodesInPreOrder(rightNode)...)
 	}
 	return nodes
+}
+
+func (tree *Tree) PostOrderTraverse() []int {
+	if tree.Root == nil {
+		return []int{}
+	}
+
+	return tree.getNodesInPostOrder(tree.Root)
 }
 
 func NewTree() *Tree {
