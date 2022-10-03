@@ -302,6 +302,59 @@ func (tree *Tree) LevelOrderTraverse() [][]int {
 	return levels
 }
 
+func (tree *Tree) insertAtStart(slice []int, newValue int) []int {
+	var newValues []int = []int{newValue}
+	newValues = append(newValues, slice...)
+	return newValues
+}
+
+func (tree *Tree) ZigZagLevelTraverse() [][]int {
+	if tree.Root == nil {
+		return [][]int{}
+	}
+	var currentLevel []*TreeNode = []*TreeNode{tree.Root}
+	var values []int = []int{tree.Root.Val}
+	var zigZag [][]int = [][]int{values}
+	var startFromEnd bool = true
+	var length int = len(currentLevel)
+	for length > 0 {
+		var newLevel []*TreeNode = []*TreeNode{}
+		var newValues []int = []int{}
+		for _, node := range currentLevel {
+			var leftNode *TreeNode = node.Left
+			var rightNode *TreeNode = node.Right
+
+			if leftNode != nil {
+				newLevel = append(newLevel, leftNode)
+				if startFromEnd {
+					newValues = tree.insertAtStart(newValues, leftNode.Val)
+				} else {
+					newValues = append(newValues, leftNode.Val)
+				}
+			}
+			if rightNode != nil {
+				newLevel = append(newLevel, rightNode)
+				if startFromEnd {
+					newValues = tree.insertAtStart(newValues, rightNode.Val)
+				} else {
+					newValues = append(newValues, rightNode.Val)
+				}
+			}
+		}
+		if startFromEnd {
+			startFromEnd = false
+		} else {
+			startFromEnd = true
+		}
+		if len(newValues) > 0 {
+			zigZag = append(zigZag, newValues)
+		}
+		currentLevel = newLevel
+		length = len(currentLevel)
+	}
+	return zigZag
+}
+
 func NewTree() *Tree {
 	return &Tree{
 		Root: nil,

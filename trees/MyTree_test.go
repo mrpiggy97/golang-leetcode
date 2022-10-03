@@ -170,6 +170,33 @@ func testLevelOrderTraverse(testCase *testing.T) {
 	}
 }
 
+func testZigZagLevelTraverse(testCase *testing.T) {
+	var myTree *trees.Tree = trees.NewTree()
+	myTree.Insert(20)
+	myTree.Insert(19)
+	myTree.Insert(21)
+	myTree.Insert(11)
+	myTree.Insert(40)
+	myTree.Insert(7)
+	myTree.Insert(12)
+	myTree.Insert(33)
+	myTree.Insert(50)
+	myTree.Insert(29)
+	myTree.Insert(2)
+	myTree.Insert(8)
+	myTree.Insert(9)
+	myTree.Insert(4)
+	var result [][]int = myTree.ZigZagLevelTraverse()
+	var expectedResult [][]int = [][]int{{20}, {21, 19}, {11, 40}, {50, 33, 12, 7}, {2, 8, 29}, {9, 4}}
+	for index, slice := range result {
+		var sliceComparing []int = expectedResult[index]
+		for nodeIndex, node := range slice {
+			if node != sliceComparing[nodeIndex] {
+				testCase.Errorf("expected %d to be %d", node, sliceComparing[nodeIndex])
+			}
+		}
+	}
+}
 func TestMyTree(testCase *testing.T) {
 	testCase.Run("action=tree-basic-functionality", testBasicFunctionality)
 	testCase.Run("action=tree-search", testSearch)
@@ -177,4 +204,5 @@ func TestMyTree(testCase *testing.T) {
 	testCase.Run("action=test-pre-order-traverse", testPreOrderTraverse)
 	testCase.Run("action=test-post-order-traverse", testPostOrderTraverse)
 	testCase.Run("action=test-level-order-traverse", testLevelOrderTraverse)
+	testCase.Run("action=test-zigzag-level-traverse", testZigZagLevelTraverse)
 }
