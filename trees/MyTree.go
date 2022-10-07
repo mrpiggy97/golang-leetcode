@@ -355,6 +355,113 @@ func (tree *Tree) ZigZagLevelTraverse() [][]int {
 	return zigZag
 }
 
+func (tree *Tree) GetDepth() int {
+	if tree.Root == nil {
+		return 0
+	}
+	var currentDepth int = 1
+	var currentLevel []*TreeNode = []*TreeNode{tree.Root}
+	var length int = len(currentLevel)
+	for length > 0 {
+		var newLevel []*TreeNode = []*TreeNode{}
+		for _, node := range currentLevel {
+			var leftNode *TreeNode = node.Left
+			var rightNode *TreeNode = node.Right
+
+			if leftNode != nil {
+				newLevel = append(newLevel, leftNode)
+			}
+			if rightNode != nil {
+				newLevel = append(newLevel, rightNode)
+			}
+		}
+		if len(newLevel) > 0 {
+			currentDepth = currentDepth + 1
+		}
+		currentLevel = newLevel
+		length = len(currentLevel)
+	}
+	return currentDepth
+}
+
+func (tree *Tree) removeVal(slice []*TreeNode, index int) []*TreeNode {
+	var newValues []*TreeNode = []*TreeNode{}
+	for pointerIndex, pointer := range slice {
+		if pointerIndex != index {
+			newValues = append(newValues, pointer)
+		}
+	}
+	return newValues
+}
+
+func (tree *Tree) LevelIsMirror(level []*TreeNode) bool {
+	if len(level)%2 != 0 {
+		return false
+	}
+	var lengthOfSlices int = len(level) / 2
+	for lengthOfSlices > 0 {
+		fmt.Println(level)
+		var endIndex int = len(level) - 1
+		if level[0] != nil && level[endIndex] != nil {
+			if level[0].Val != level[endIndex].Val {
+				return false
+			}
+		}
+		if level[0] == nil && level[endIndex] != nil {
+			return false
+		}
+		if level[0] != nil && level[endIndex] == nil {
+			return false
+		}
+		level = tree.removeVal(level, 0)
+		level = tree.removeVal(level, len(level)-1)
+		lengthOfSlices = len(level)
+	}
+	return true
+}
+
+func (tree *Tree) IsMirror() bool {
+	if tree.Root == nil {
+		return false
+	}
+	var currentLevel []*TreeNode = []*TreeNode{tree.Root}
+	var nodeNumber int = 1
+	//get level
+	for nodeNumber > 0 {
+		var newLevel []*TreeNode = []*TreeNode{}
+		var newNodeNumber int = 0
+		for _, node := range currentLevel {
+			if node != nil {
+				if node.Left != nil {
+					newNodeNumber = nodeNumber + 1
+				}
+				if node.Right != nil {
+					newNodeNumber = nodeNumber + 1
+				}
+				newLevel = append(newLevel, node.Left)
+				newLevel = append(newLevel, node.Right)
+			}
+		}
+
+		nodeNumber = newNodeNumber
+
+		if nodeNumber > 0 {
+			//check if level is a mirror
+			if len(newLevel)%2 != 0 && len(newLevel) > 0 {
+				return false
+			}
+			if len(newLevel)%2 == 0 {
+				var levelIsValid bool = tree.LevelIsMirror(newLevel)
+				if !levelIsValid {
+					return false
+				}
+				currentLevel = newLevel
+			}
+		}
+	}
+	return true
+}
+
 func NewTree() *Tree {
 	return &Tree{
 		Root: nil,

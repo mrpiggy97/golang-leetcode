@@ -197,6 +197,98 @@ func testZigZagLevelTraverse(testCase *testing.T) {
 		}
 	}
 }
+
+func testGetDepth(testCase *testing.T) {
+	var myTree *trees.Tree = trees.NewTree()
+	myTree.Insert(20)
+	myTree.Insert(19)
+	myTree.Insert(21)
+	myTree.Insert(11)
+	myTree.Insert(40)
+	myTree.Insert(7)
+	myTree.Insert(12)
+	myTree.Insert(33)
+	myTree.Insert(50)
+	myTree.Insert(29)
+	myTree.Insert(2)
+	myTree.Insert(8)
+	myTree.Insert(9)
+	myTree.Insert(4)
+	var result int = myTree.GetDepth()
+	var expectedResult int = 6
+	if result != expectedResult {
+		testCase.Errorf("expected depth of tree to be %d, got %d instead", expectedResult, result)
+	}
+}
+
+func testLevelIsMirror(testCase *testing.T) {
+	var myTree *trees.Tree = trees.NewTree()
+	var firstNode *trees.TreeNode = &trees.TreeNode{
+		Val:   2,
+		Left:  nil,
+		Right: nil,
+	}
+	var secondNode *trees.TreeNode = &trees.TreeNode{
+		Val:   2,
+		Left:  nil,
+		Right: nil,
+	}
+	var level []*trees.TreeNode = []*trees.TreeNode{nil, firstNode, secondNode, nil}
+	var result bool = myTree.LevelIsMirror(level)
+	var expectedResult bool = true
+	if result != expectedResult {
+		testCase.Errorf("expected %v to be %v", result, expectedResult)
+	}
+
+	level = []*trees.TreeNode{nil, firstNode, nil, secondNode}
+	result = myTree.LevelIsMirror(level)
+	expectedResult = false
+	if result != expectedResult {
+		testCase.Errorf("expected %v to be %v", result, expectedResult)
+	}
+	firstNode.Val = 4
+	secondNode.Val = 3
+	var thirdNode *trees.TreeNode = &trees.TreeNode{
+		Val:   3,
+		Right: nil,
+		Left:  nil,
+	}
+	var fourthNode *trees.TreeNode = &trees.TreeNode{
+		Val:   4,
+		Right: nil,
+		Left:  nil,
+	}
+	level = []*trees.TreeNode{firstNode, secondNode, thirdNode, fourthNode}
+	result = myTree.LevelIsMirror(level)
+	expectedResult = true
+	if result != expectedResult {
+		testCase.Errorf("expected %v to be %v", result, expectedResult)
+	}
+}
+
+func testIsMirror(testCase *testing.T) {
+	var myTree *trees.Tree = trees.NewTree()
+	myTree.Insert(20)
+	myTree.Insert(19)
+	myTree.Insert(21)
+	myTree.Insert(11)
+	myTree.Insert(40)
+	myTree.Insert(7)
+	myTree.Insert(12)
+	myTree.Insert(33)
+	myTree.Insert(50)
+	myTree.Insert(29)
+	myTree.Insert(2)
+	myTree.Insert(8)
+	myTree.Insert(9)
+	myTree.Insert(4)
+	var result bool = myTree.IsMirror()
+	var expectedResult bool = false
+	if result != expectedResult {
+		testCase.Errorf("expected %v to be %v", result, expectedResult)
+	}
+}
+
 func TestMyTree(testCase *testing.T) {
 	testCase.Run("action=tree-basic-functionality", testBasicFunctionality)
 	testCase.Run("action=tree-search", testSearch)
@@ -205,4 +297,7 @@ func TestMyTree(testCase *testing.T) {
 	testCase.Run("action=test-post-order-traverse", testPostOrderTraverse)
 	testCase.Run("action=test-level-order-traverse", testLevelOrderTraverse)
 	testCase.Run("action=test-zigzag-level-traverse", testZigZagLevelTraverse)
+	testCase.Run("action=test-get-depth", testGetDepth)
+	testCase.Run("action=test-level-is-mirror", testLevelIsMirror)
+	testCase.Run("action=test-is-mirror", testIsMirror)
 }
