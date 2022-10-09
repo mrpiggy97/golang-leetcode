@@ -10,6 +10,11 @@ type TreeNode struct {
 	Val   int
 }
 
+type NodeSum struct {
+	Node *TreeNode
+	Sum  int
+}
+
 func NewNode(value int) *TreeNode {
 	return &TreeNode{
 		Val:   value,
@@ -460,6 +465,70 @@ func (tree *Tree) IsMirror() bool {
 		}
 	}
 	return true
+}
+
+func (tree *Tree) InvertTree() *TreeNode {
+	if tree.Root != nil {
+		var nodesToVisit []*TreeNode = []*TreeNode{tree.Root}
+		for len(nodesToVisit) > 0 {
+			var newNodesToVisit []*TreeNode = []*TreeNode{}
+			for _, node := range nodesToVisit {
+				var leftNode *TreeNode = node.Left
+				var rightNode *TreeNode = node.Right
+				node.Left = rightNode
+				node.Right = leftNode
+				if leftNode != nil {
+					newNodesToVisit = append(newNodesToVisit, leftNode)
+				}
+				if rightNode != nil {
+					newNodesToVisit = append(newNodesToVisit, rightNode)
+				}
+			}
+			nodesToVisit = newNodesToVisit
+		}
+	}
+	return tree.Root
+}
+
+func (tree *Tree) HasPathSum(targetSum int) bool {
+	if tree.Root != nil {
+		var rootSum *NodeSum = &NodeSum{
+			Node: tree.Root,
+			Sum:  tree.Root.Val,
+		}
+		var nodesToVisit []*NodeSum = []*NodeSum{rootSum}
+		for len(nodesToVisit) > 0 {
+			var newNodesToVisit []*NodeSum = []*NodeSum{}
+			for _, node := range nodesToVisit {
+				var currentNode *TreeNode = node.Node
+				if currentNode != nil {
+					var leftNode *TreeNode = currentNode.Left
+					var rightNode *TreeNode = currentNode.Right
+					if leftNode == nil && rightNode == nil {
+						if node.Sum == targetSum {
+							return true
+						}
+					}
+					if leftNode != nil {
+						var newNode *NodeSum = &NodeSum{
+							Node: leftNode,
+							Sum:  node.Sum + leftNode.Val,
+						}
+						newNodesToVisit = append(newNodesToVisit, newNode)
+					}
+					if rightNode != nil {
+						var newNode *NodeSum = &NodeSum{
+							Node: rightNode,
+							Sum:  node.Sum + rightNode.Val,
+						}
+						newNodesToVisit = append(newNodesToVisit, newNode)
+					}
+				}
+			}
+			nodesToVisit = newNodesToVisit
+		}
+	}
+	return false
 }
 
 func NewTree() *Tree {

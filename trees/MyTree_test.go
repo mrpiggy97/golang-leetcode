@@ -289,6 +289,34 @@ func testIsMirror(testCase *testing.T) {
 	}
 }
 
+func testHasPathSum(testCase *testing.T) {
+	var myTree *trees.Tree = trees.NewTree()
+	myTree.Insert(20)
+	myTree.Insert(19)
+	myTree.Insert(21)
+	myTree.Insert(11)
+	myTree.Insert(40)
+	myTree.Insert(7)
+	myTree.Insert(12)
+	myTree.Insert(33)
+	myTree.Insert(50)
+	myTree.Insert(29)
+	myTree.Insert(2)
+	myTree.Insert(8)
+	myTree.Insert(9)
+	myTree.Insert(4)
+	var result bool = myTree.HasPathSum(114)
+	var expectedResult bool = true
+	if result != expectedResult {
+		testCase.Errorf("expected %v to be %v", result, expectedResult)
+	}
+
+	result = myTree.HasPathSum(1000)
+	expectedResult = false
+	if result != expectedResult {
+		testCase.Errorf("expected %v to be %v", result, expectedResult)
+	}
+}
 func TestMyTree(testCase *testing.T) {
 	testCase.Run("action=tree-basic-functionality", testBasicFunctionality)
 	testCase.Run("action=tree-search", testSearch)
@@ -300,4 +328,5 @@ func TestMyTree(testCase *testing.T) {
 	testCase.Run("action=test-get-depth", testGetDepth)
 	testCase.Run("action=test-level-is-mirror", testLevelIsMirror)
 	testCase.Run("action=test-is-mirror", testIsMirror)
+	testCase.Run("action=test-has-path-sum", testHasPathSum)
 }
