@@ -96,6 +96,9 @@ func (tree *Tree) Insert(value int) {
 }
 
 func (tree *Tree) Search(value int) *TreeNode {
+	if tree.Root == nil {
+		return nil
+	}
 	var currentNode *TreeNode = tree.Root
 	var stop bool = false
 	for !stop {
