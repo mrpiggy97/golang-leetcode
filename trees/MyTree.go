@@ -2,6 +2,7 @@ package trees
 
 import (
 	"fmt"
+	"sort"
 )
 
 type TreeNode struct {
@@ -554,29 +555,6 @@ func (tree *Tree) IsValid() bool {
 	return true
 }
 
-func (tree *Tree) ArrangeHighToLow(slice []int) []int {
-	var newValues []int = []int{}
-	for len(slice) > 0 {
-		var highestValue int = slice[0]
-		var highestValueIndex int = 0
-		var sliceCopy []int = []int{}
-		for index, val := range slice {
-			if val > highestValue {
-				highestValue = val
-				highestValueIndex = index
-			}
-		}
-		newValues = append(newValues, highestValue)
-		for index := range slice {
-			if index != highestValueIndex {
-				sliceCopy = append(sliceCopy, slice[index])
-			}
-		}
-		slice = sliceCopy
-	}
-	return newValues
-}
-
 func (tree *Tree) FindTarget(target int) bool {
 	// first get all nodes
 	if tree.Root != nil {
@@ -594,7 +572,10 @@ func (tree *Tree) FindTarget(target int) bool {
 				nodesToVisit = append(nodesToVisit, currentNode.Right)
 			}
 		}
-		values = tree.ArrangeHighToLow(values)
+		sort.SliceStable(values, func(firstIndex, secondIndex int) bool {
+			return values[firstIndex] > values[secondIndex]
+		})
+		fmt.Println(values)
 		if len(values) <= 1 {
 			return false
 		}
