@@ -317,6 +317,41 @@ func testHasPathSum(testCase *testing.T) {
 		testCase.Errorf("expected %v to be %v", result, expectedResult)
 	}
 }
+
+func testArrangeHighToLow(testCase *testing.T) {
+	var myTree *trees.Tree = trees.NewTree()
+	var values []int = []int{1, 34, 6, 1, 5, 7, 100}
+	var result []int = myTree.ArrangeHighToLow(values)
+	var expectedResult []int = []int{100, 34, 7, 6, 5, 1, 1}
+	for index, val := range result {
+		if val != expectedResult[index] {
+			testCase.Errorf("expected %d to be %d", val, expectedResult[index])
+		}
+	}
+}
+
+func testFindTarget(testCase *testing.T) {
+	var myTree *trees.Tree = trees.NewTree()
+	myTree.Insert(20)
+	myTree.Insert(19)
+	myTree.Insert(21)
+	myTree.Insert(11)
+	myTree.Insert(40)
+	myTree.Insert(7)
+	myTree.Insert(12)
+	myTree.Insert(33)
+	myTree.Insert(50)
+	myTree.Insert(29)
+	myTree.Insert(2)
+	myTree.Insert(8)
+	myTree.Insert(9)
+	myTree.Insert(4)
+	var result bool = myTree.FindTarget(42)
+	var expectedResult bool = true
+	if result != expectedResult {
+		testCase.Errorf("expected %v to be %v", result, expectedResult)
+	}
+}
 func TestMyTree(testCase *testing.T) {
 	testCase.Run("action=tree-basic-functionality", testBasicFunctionality)
 	testCase.Run("action=tree-search", testSearch)
@@ -329,4 +364,6 @@ func TestMyTree(testCase *testing.T) {
 	testCase.Run("action=test-level-is-mirror", testLevelIsMirror)
 	testCase.Run("action=test-is-mirror", testIsMirror)
 	testCase.Run("action=test-has-path-sum", testHasPathSum)
+	testCase.Run("action=test-arrange-high-to-low", testArrangeHighToLow)
+	testCase.Run("action=test-find-target", testFindTarget)
 }

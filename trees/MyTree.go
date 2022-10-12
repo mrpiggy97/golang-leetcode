@@ -59,7 +59,7 @@ func (tree *Tree) insertAt(index int, newValue *TreeNode, slice []*TreeNode) []*
 	return values
 }
 
-func (tree *Tree) Insert(value int) {
+func (tree *Tree) Insert(value int) *TreeNode {
 
 	if tree.Root != nil {
 		var currentNode *TreeNode = tree.Root
@@ -93,6 +93,7 @@ func (tree *Tree) Insert(value int) {
 	if tree.Root == nil {
 		tree.Root = NewNode(value)
 	}
+	return tree.Root
 }
 
 func (tree *Tree) Search(value int) *TreeNode {
@@ -529,6 +530,84 @@ func (tree *Tree) HasPathSum(targetSum int) bool {
 				}
 			}
 			nodesToVisit = newNodesToVisit
+		}
+	}
+	return false
+}
+
+func (tree *Tree) IsValid() bool {
+	if tree.Root != nil {
+		var nodesInOrder []int = tree.getNodesInOrder(tree.Root)
+		if len(nodesInOrder) == 1 {
+			return true
+		}
+		var lowestValue int = nodesInOrder[0]
+		for index := 1; index < len(nodesInOrder); index++ {
+			var currentValue int = nodesInOrder[index]
+			if lowestValue >= currentValue {
+				return false
+			} else {
+				lowestValue = currentValue
+			}
+		}
+	}
+	return true
+}
+
+func (tree *Tree) ArrangeHighToLow(slice []int) []int {
+	var newValues []int = []int{}
+	for len(slice) > 0 {
+		var highestValue int = slice[0]
+		var highestValueIndex int = 0
+		var sliceCopy []int = []int{}
+		for index, val := range slice {
+			if val > highestValue {
+				highestValue = val
+				highestValueIndex = index
+			}
+		}
+		newValues = append(newValues, highestValue)
+		for index := range slice {
+			if index != highestValueIndex {
+				sliceCopy = append(sliceCopy, slice[index])
+			}
+		}
+		slice = sliceCopy
+	}
+	return newValues
+}
+
+func (tree *Tree) FindTarget(target int) bool {
+	// first get all nodes
+	if tree.Root != nil {
+		var nodesToVisit []*TreeNode = []*TreeNode{tree.Root}
+		var values []int = []int{}
+		for i := 0; i < len(nodesToVisit); i++ {
+			var currentNode *TreeNode = nodesToVisit[i]
+			if currentNode.Val <= target {
+				values = append(values, currentNode.Val)
+			}
+			if currentNode.Left != nil {
+				nodesToVisit = append(nodesToVisit, currentNode.Left)
+			}
+			if currentNode.Right != nil {
+				nodesToVisit = append(nodesToVisit, currentNode.Right)
+			}
+		}
+		values = tree.ArrangeHighToLow(values)
+		if len(values) <= 1 {
+			return false
+		}
+		for i, val := range values {
+			for index := len(values) - 1; index > i; index-- {
+				var currentVal int = values[index]
+				if val+currentVal == target {
+					return true
+				}
+				if val+currentVal > target {
+					break
+				}
+			}
 		}
 	}
 	return false
