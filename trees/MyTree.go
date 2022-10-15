@@ -572,13 +572,16 @@ func (tree *Tree) FindTarget(target int) bool {
 				nodesToVisit = append(nodesToVisit, currentNode.Right)
 			}
 		}
+		//sort slice from high to low
 		sort.SliceStable(values, func(firstIndex, secondIndex int) bool {
 			return values[firstIndex] > values[secondIndex]
 		})
-		fmt.Println(values)
 		if len(values) <= 1 {
 			return false
 		}
+		// sum every value with item beggining from last item in slice
+		// if the current value + the lowest current value is higher
+		// than target then break and continue the loop
 		for i, val := range values {
 			for index := len(values) - 1; index > i; index-- {
 				var currentVal int = values[index]
@@ -592,6 +595,64 @@ func (tree *Tree) FindTarget(target int) bool {
 		}
 	}
 	return false
+}
+
+func (tree *Tree) GetLowestCommonAncestor(node1, node2 *TreeNode) *TreeNode {
+	var nodesToVisit []*TreeNode = []*TreeNode{tree.Root}
+	var currentAncestor *TreeNode = tree.Root
+	for len(nodesToVisit) > 0 {
+		var newNodesToVisit []*TreeNode = []*TreeNode{}
+		for _, currentNode := range nodesToVisit {
+			if currentNode.Left != nil {
+				newNodesToVisit = append(newNodesToVisit, currentNode.Left)
+			}
+			if currentNode.Right != nil {
+				newNodesToVisit = append(newNodesToVisit, currentNode.Right)
+			}
+			var nodeSubTree []*TreeNode = []*TreeNode{currentNode}
+			var nodesFound map[*TreeNode]bool = make(map[*TreeNode]bool)
+			nodesFound[node1] = false
+			nodesFound[node2] = false
+			for index := 0; index < len(nodeSubTree); index++ {
+				var node *TreeNode = nodeSubTree[index]
+				if node == node1 {
+					nodesFound[node1] = true
+				}
+				if node == node2 {
+					nodesFound[node2] = true
+				}
+				var node1Found bool = nodesFound[node1]
+				var node2Found bool = nodesFound[node2]
+				if node1Found && node2Found {
+					currentAncestor = currentNode
+					break
+				}
+				if node.Left != nil {
+					nodeSubTree = append(nodeSubTree, node.Left)
+					if node.Left == node1 {
+						nodesFound[node1] = true
+					}
+					if node.Left == node2 {
+						nodesFound[node2] = true
+					}
+
+				}
+
+				if node.Right != nil {
+					nodeSubTree = append(nodeSubTree, node.Right)
+					if node.Right == node1 {
+						nodesFound[node1] = true
+					}
+
+					if node.Right == node2 {
+						nodesFound[node2] = true
+					}
+				}
+			}
+		}
+		nodesToVisit = newNodesToVisit
+	}
+	return currentAncestor
 }
 
 func NewTree() *Tree {

@@ -340,6 +340,24 @@ func testFindTarget(testCase *testing.T) {
 		testCase.Errorf("expected %v to be %v", result, expectedResult)
 	}
 }
+
+func testGetLowestCommonAncestor(testCase *testing.T) {
+	var myTree *trees.Tree = trees.NewTree()
+	var firstNode *trees.TreeNode = myTree.Insert(6)
+	var secondNode *trees.TreeNode = myTree.Insert(2)
+	var thirdNode *trees.TreeNode = myTree.Insert(8)
+	myTree.Insert(0)
+	myTree.Insert(4)
+	myTree.Insert(7)
+	myTree.Insert(9)
+	myTree.Insert(3)
+	myTree.Insert(5)
+	var result *trees.TreeNode = myTree.GetLowestCommonAncestor(secondNode, thirdNode)
+	var expectedResult *trees.TreeNode = firstNode
+	if result != expectedResult {
+		testCase.Errorf("expected %v to be %v", result, expectedResult)
+	}
+}
 func TestMyTree(testCase *testing.T) {
 	testCase.Run("action=tree-basic-functionality", testBasicFunctionality)
 	testCase.Run("action=tree-search", testSearch)
@@ -353,4 +371,5 @@ func TestMyTree(testCase *testing.T) {
 	testCase.Run("action=test-is-mirror", testIsMirror)
 	testCase.Run("action=test-has-path-sum", testHasPathSum)
 	testCase.Run("action=test-find-target", testFindTarget)
+	testCase.Run("action=test-get-lowest-common-ancestor", testGetLowestCommonAncestor)
 }
