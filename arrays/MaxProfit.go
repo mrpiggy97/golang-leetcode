@@ -53,47 +53,134 @@ func ProfitWorker(stockPrices []int, indexesSorted []int, indexes <-chan int, re
 	close(results)
 }
 
+func SendIndexes(indexChan chan<- int, secondIndexes chan<- int, indexesSorted []int) {
+	for index := range indexesSorted {
+		if index%2 != 0 {
+			indexChan <- index
+		} else {
+			secondIndexes <- index
+		}
+	}
+	close(indexChan)
+	close(secondIndexes)
+}
+
 func MaxProfit(prices []int) int {
 	var indexesHighToLow []int = GetIndexesHighToLow(prices)
 	var profit int = 0
-	var indexChan chan int = make(chan int, 1)
-	var firstWorkerChan chan int = make(chan int, 1)
-	var secondWorkerChan chan int = make(chan int, 1)
-	var thirdWorkerChannel chan int = make(chan int, 1)
-	go ProfitWorker(prices, indexesHighToLow, indexChan, firstWorkerChan)
-	go ProfitWorker(prices, indexesHighToLow, indexChan, secondWorkerChan)
-	go ProfitWorker(prices, indexesHighToLow, indexChan, thirdWorkerChannel)
+	var indexChan chan int = make(chan int, len(indexesHighToLow))
+	var index2Chan chan int = make(chan int, len(indexesHighToLow))
+	var results1 chan int = make(chan int, len(indexesHighToLow))
+	var results2 chan int = make(chan int, len(indexesHighToLow))
+	var results3 chan int = make(chan int, len(indexesHighToLow))
+	var results4 chan int = make(chan int, len(indexesHighToLow))
+	var results5 chan int = make(chan int, len(indexesHighToLow))
+	var results6 chan int = make(chan int, len(indexesHighToLow))
+	var results7 chan int = make(chan int, len(indexesHighToLow))
+	var results8 chan int = make(chan int, len(indexesHighToLow))
+	var results9 chan int = make(chan int, len(indexesHighToLow))
+	var results10 chan int = make(chan int, len(indexesHighToLow))
 
-	for index := range indexesHighToLow {
-		indexChan <- index
-	}
-	close(indexChan)
+	go SendIndexes(indexChan, index2Chan, indexesHighToLow)
+	go ProfitWorker(prices, indexesHighToLow, indexChan, results1)
+	go ProfitWorker(prices, indexesHighToLow, indexChan, results2)
+	go ProfitWorker(prices, indexesHighToLow, indexChan, results3)
+	go ProfitWorker(prices, indexesHighToLow, indexChan, results4)
+	go ProfitWorker(prices, indexesHighToLow, indexChan, results5)
+	go ProfitWorker(prices, indexesHighToLow, index2Chan, results6)
+	go ProfitWorker(prices, indexesHighToLow, index2Chan, results7)
+	go ProfitWorker(prices, indexesHighToLow, index2Chan, results8)
+	go ProfitWorker(prices, indexesHighToLow, index2Chan, results9)
+	go ProfitWorker(prices, indexesHighToLow, index2Chan, results10)
 
-	var firstChannelOpen bool = true
-	var secondChannelOpen bool = true
-	var thirdChannelOpen bool = true
+	var results1Open bool = true
+	var results2Open bool = true
+	var results3Open bool = true
+	var results4Open bool = true
+	var results5Open bool = true
+	var results6Open bool = true
+	var results7Open bool = true
+	var results8Open bool = true
+	var results9Open bool = true
+	var results10Open bool = true
 
-	for firstChannelOpen || secondChannelOpen || thirdChannelOpen {
+	for results1Open || results2Open || results3Open || results4Open || results5Open || results6Open || results7Open || results8Open || results9Open || results10Open {
 		select {
-		case newProfit, channelOpen := <-firstWorkerChan:
-			if !channelOpen {
-				firstChannelOpen = false
+		case newProfit, ok := <-results1:
+			if !ok {
+				results1Open = false
 			} else {
 				if newProfit > profit {
 					profit = newProfit
 				}
 			}
-		case newProfit, channelOpen := <-secondWorkerChan:
-			if !channelOpen {
-				secondChannelOpen = false
+		case newProfit, ok := <-results2:
+			if !ok {
+				results2Open = false
 			} else {
 				if newProfit > profit {
 					profit = newProfit
 				}
 			}
-		case newProfit, channelOpen := <-thirdWorkerChannel:
-			if !channelOpen {
-				thirdChannelOpen = false
+		case newProfit, ok := <-results3:
+			if !ok {
+				results3Open = false
+			} else {
+				if newProfit > profit {
+					profit = newProfit
+				}
+			}
+		case newProfit, ok := <-results4:
+			if !ok {
+				results4Open = false
+			} else {
+				if newProfit > profit {
+					profit = newProfit
+				}
+			}
+		case newProfit, ok := <-results5:
+			if !ok {
+				results5Open = false
+			} else {
+				if newProfit > profit {
+					profit = newProfit
+				}
+			}
+		case newProfit, ok := <-results6:
+			if !ok {
+				results6Open = false
+			} else {
+				if newProfit > profit {
+					profit = newProfit
+				}
+			}
+		case newProfit, ok := <-results7:
+			if !ok {
+				results7Open = false
+			} else {
+				if newProfit > profit {
+					profit = newProfit
+				}
+			}
+		case newProfit, ok := <-results8:
+			if !ok {
+				results8Open = false
+			} else {
+				if newProfit > profit {
+					profit = newProfit
+				}
+			}
+		case newProfit, ok := <-results9:
+			if !ok {
+				results9Open = false
+			} else {
+				if newProfit > profit {
+					profit = newProfit
+				}
+			}
+		case newProfit, ok := <-results10:
+			if !ok {
+				results10Open = false
 			} else {
 				if newProfit > profit {
 					profit = newProfit
