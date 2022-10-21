@@ -4,56 +4,103 @@ import (
 	"sort"
 )
 
-func getIndexes(prices []int) []int {
-	var indexes []int = []int{}
-	for index := range prices {
-		indexes = append(indexes, index)
+func GetIndexesHighToLow(prices []int) []int {
+	// we don't want to alter prices so we use a copy instead
+	var pricesCopy []int = make([]int, len(prices))
+	copy(pricesCopy, prices)
+	// values will serve to retain the current indexes of prices
+	// in pricesCopy
+	var values map[int][]int = make(map[int][]int)
+	var indexesHighToLow []int = []int{}
+	for index, val := range pricesCopy {
+		slice, exists := values[val]
+		if !exists {
+			values[val] = []int{index}
+		} else {
+			slice = append(slice, index)
+			values[val] = slice
+		}
 	}
-	return indexes
+
+	// sort pricesCopy high to low
+	sort.SliceStable(pricesCopy, func(first, second int) bool {
+		return pricesCopy[first] > pricesCopy[second]
+	})
+	// loop through the sorted slice, get its original index from values map
+	// and append that index to indexesHighToLow
+	for _, value := range pricesCopy {
+		var indexes []int = values[value]
+		indexesHighToLow = append(indexesHighToLow, indexes...)
+		delete(values, value)
+	}
+	return indexesHighToLow
 }
 
-func getLowestValueBeforeEndIndex(endIndex int, priceSlice []int) int {
-	if endIndex == 0 {
-		return -1
-	}
-	var lowestValue int = priceSlice[endIndex]
-	for index, value := range priceSlice {
-		if index == endIndex {
-			break
+func ProfitWorker(stockPrices []int, indexesSorted []int, indexes <-chan int, results chan<- int) {
+	for index := range indexes {
+		var sellingIndex int = indexesSorted[index]
+		var sellingPrice int = stockPrices[sellingIndex]
+		for tailIndex := len(indexesSorted) - 1; tailIndex > index; tailIndex-- {
+			var buyingIndex int = indexesSorted[tailIndex]
+			if sellingIndex > buyingIndex {
+				var buyingPrice int = stockPrices[buyingIndex]
+				var profit int = sellingPrice - buyingPrice
+				results <- profit
+				break
+			}
 		}
-		if value < lowestValue {
-			lowestValue = value
-		}
 	}
-	return lowestValue
+	close(results)
 }
 
 func MaxProfit(prices []int) int {
-	var indexes []int = getIndexes(prices)
-	var profitsHighToLow []int = make([]int, len(indexes))
-	copy(profitsHighToLow, indexes)
-	sort.Slice(profitsHighToLow, func(firstIndex, secondIndex int) bool {
-		var indexVal1 int = profitsHighToLow[firstIndex]
-		var indexVal2 int = profitsHighToLow[secondIndex]
-		var val1 int = prices[indexVal1]
-		var val2 int = prices[indexVal2]
-		return val1 > val2
-	})
+	var indexesHighToLow []int = GetIndexesHighToLow(prices)
+	var profit int = 0
+	var indexChan chan int = make(chan int, 1)
+	var firstWorkerChan chan int = make(chan int, 1)
+	var secondWorkerChan chan int = make(chan int, 1)
+	var thirdWorkerChannel chan int = make(chan int, 1)
+	go ProfitWorker(prices, indexesHighToLow, indexChan, firstWorkerChan)
+	go ProfitWorker(prices, indexesHighToLow, indexChan, secondWorkerChan)
+	go ProfitWorker(prices, indexesHighToLow, indexChan, thirdWorkerChannel)
 
-	var highestProfit int = 0
-	var currentProfit int = 0
-	for _, highIndex := range profitsHighToLow {
-		var highValue int = prices[highIndex]
-		var lowestValue int = getLowestValueBeforeEndIndex(highIndex, prices)
-		if lowestValue > -1 {
-			currentProfit = highValue - lowestValue
-		}
-		if currentProfit > highestProfit {
-			highestProfit = currentProfit
-		}
-		if currentProfit < highestProfit {
-			break
+	for index := range indexesHighToLow {
+		indexChan <- index
+	}
+	close(indexChan)
+
+	var firstChannelOpen bool = true
+	var secondChannelOpen bool = true
+	var thirdChannelOpen bool = true
+
+	for firstChannelOpen || secondChannelOpen || thirdChannelOpen {
+		select {
+		case newProfit, channelOpen := <-firstWorkerChan:
+			if !channelOpen {
+				firstChannelOpen = false
+			} else {
+				if newProfit > profit {
+					profit = newProfit
+				}
+			}
+		case newProfit, channelOpen := <-secondWorkerChan:
+			if !channelOpen {
+				secondChannelOpen = false
+			} else {
+				if newProfit > profit {
+					profit = newProfit
+				}
+			}
+		case newProfit, channelOpen := <-thirdWorkerChannel:
+			if !channelOpen {
+				thirdChannelOpen = false
+			} else {
+				if newProfit > profit {
+					profit = newProfit
+				}
+			}
 		}
 	}
-	return highestProfit
+
+	return profit
 }
