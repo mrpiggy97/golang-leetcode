@@ -37,7 +37,11 @@ func GetIndexesHighToLow(prices []int) []int {
 }
 
 func ProfitWorker(stockPrices []int, indexesSorted []int, indexes <-chan int, results chan<- int) {
+	var stopSearching bool = false
 	for index := range indexes {
+		if stopSearching {
+			break
+		}
 		var sellingIndex int = indexesSorted[index]
 		var sellingPrice int = stockPrices[sellingIndex]
 		for tailIndex := len(indexesSorted) - 1; tailIndex > index; tailIndex-- {
