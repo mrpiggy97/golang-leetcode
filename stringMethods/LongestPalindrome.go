@@ -1,16 +1,13 @@
 package stringMethods
 
-func IsPalindrome(str string, startingIndex, tailIndex int) bool {
-	var subStr string = str[startingIndex:tailIndex] + string(str[tailIndex])
-	var splitIndex int = int(len(subStr) / 2)
-	var currentEnd int = len(subStr) - 1
-	for i := 0; i < splitIndex; i++ {
-		var head byte = subStr[i]
-		var tail byte = subStr[currentEnd]
-		if head != tail {
+func IsPalindrome(str string) bool {
+	var tailIndex int = len(str) - 1
+	var splitIndex int = int(len(str) / 2)
+	for index := 0; index < splitIndex; index++ {
+		if str[index] != str[tailIndex] {
 			return false
 		}
-		currentEnd = currentEnd - 1
+		tailIndex = tailIndex - 1
 	}
 	return true
 }
@@ -25,13 +22,12 @@ func LongestPalindrome(str string) string {
 			var tailValue string = string(str[tail])
 			if tailValue == string(value) {
 				var length int = (tail - index) + 1
-				if length < len(selectedPalindrome) {
+				if length <= len(selectedPalindrome) {
 					break
 				}
-				var isPalindrome bool = IsPalindrome(str, index, tail)
+				var newStr string = str[index:tail] + string(str[tail])
+				var isPalindrome bool = IsPalindrome(newStr)
 				if isPalindrome {
-					var newStr = string(str[index:tail])
-					newStr = newStr + tailValue
 					if len(newStr) > len(selectedPalindrome) {
 						selectedPalindrome = newStr
 						break
