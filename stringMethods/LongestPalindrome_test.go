@@ -8,28 +8,28 @@ import (
 
 func testIsPalindrome(testCase *testing.T) {
 	var testingStr string = "aba"
-	var result bool = stringMethods.IsPalindrome(testingStr, 0, len(testingStr)-1)
+	var result bool = stringMethods.IsPalindrome(testingStr)
 	var expectedResult bool = true
 	if result != expectedResult {
 		testCase.Errorf("expected %v to be %v", result, expectedResult)
 	}
 
 	testingStr = "aas43"
-	result = stringMethods.IsPalindrome(testingStr, 3, len(testingStr)-1)
+	result = stringMethods.IsPalindrome(testingStr)
 	expectedResult = false
 	if result != expectedResult {
 		testCase.Errorf("expected %v to be %v", result, expectedResult)
 	}
 
 	testingStr = "anitalavalatina"
-	result = stringMethods.IsPalindrome(testingStr, 0, len(testingStr)-1)
+	result = stringMethods.IsPalindrome(testingStr)
 	expectedResult = true
 	if result != expectedResult {
 		testCase.Errorf("expected %v to be %v", result, expectedResult)
 	}
 
-	testingStr = "abafafaaaaaf"
-	result = stringMethods.IsPalindrome(testingStr, 5, 11)
+	testingStr = "faaaaaf"
+	result = stringMethods.IsPalindrome(testingStr)
 	//fmt.Println(string(testingStr[5:11] + string(testingStr[11])))
 	expectedResult = true
 	if result != expectedResult {
