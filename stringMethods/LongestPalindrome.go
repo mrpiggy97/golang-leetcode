@@ -24,12 +24,17 @@ func LongestPalindrome(str string) string {
 		for tail := len(str) - 1; tail > index; tail-- {
 			var tailValue string = string(str[tail])
 			if tailValue == string(value) {
+				var length int = (tail - index) + 1
+				if length < len(selectedPalindrome) {
+					break
+				}
 				var isPalindrome bool = IsPalindrome(str, index, tail)
 				if isPalindrome {
 					var newStr = string(str[index:tail])
 					newStr = newStr + tailValue
 					if len(newStr) > len(selectedPalindrome) {
 						selectedPalindrome = newStr
+						break
 					}
 				}
 			}
