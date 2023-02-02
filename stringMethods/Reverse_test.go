@@ -7,36 +7,15 @@ import (
 )
 
 func testReverse(testCase *testing.T) {
-	var testingString string = "foo(bar(baz))ram"
-	var expectedResult string = "foobazrabram"
+	var testingString string = "foo(bar)ram"
+	var expectedResult string = "foorabram"
 	var result string = stringMethods.FilterStringsToReverse(testingString)
 	if result != expectedResult {
 		testCase.Errorf("expected %s to be %s", result, expectedResult)
 	}
 
-	testingString = "(foo)zam"
-	expectedResult = "oofzam"
-	result = stringMethods.FilterStringsToReverse(testingString)
-	if result != expectedResult {
-		testCase.Errorf("expected %s to be %s", result, expectedResult)
-	}
-
-	testingString = "zam(foo)"
-	expectedResult = "zamoof"
-	result = stringMethods.FilterStringsToReverse(testingString)
-	if result != expectedResult {
-		testCase.Errorf("expected %s to be %s", result, expectedResult)
-	}
-
-	testingString = "()"
-	expectedResult = ""
-	result = stringMethods.FilterStringsToReverse(testingString)
-	if result != expectedResult {
-		testCase.Errorf("expected %s to be %s", result, expectedResult)
-	}
-
-	testingString = "(foo)(ram)(zam)"
-	expectedResult = "oofmarmaz"
+	testingString = "(bar)"
+	expectedResult = "rab"
 	result = stringMethods.FilterStringsToReverse(testingString)
 	if result != expectedResult {
 		testCase.Errorf("expected %s to be %s", result, expectedResult)

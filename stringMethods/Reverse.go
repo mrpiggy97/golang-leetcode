@@ -1,8 +1,10 @@
 package stringMethods
 
 type QNode struct {
-	Previous *QNode
-	Str      string
+	Next         *QNode
+	Previous     *QNode
+	Str          string
+	NeedsClosure bool
 }
 
 func (qNode *QNode) reverse() {
@@ -17,70 +19,45 @@ func (qNode *QNode) reverse() {
 }
 
 func FilterStringsToReverse(str string) string {
-	var currentStr string = ""
-	var currentNode *QNode = nil
+	var finalString string = ""
+	var currentNode *QNode = &QNode{
+		Next:         nil,
+		Previous:     nil,
+		Str:          "",
+		NeedsClosure: false,
+	}
 	for index := range str {
 		var currentByte byte = str[index]
-		var stringValue string = string(currentByte)
-		if stringValue != "(" && stringValue != ")" {
-			currentStr = currentStr + stringValue
+		var currentString string = string(currentByte)
+		if currentString != "(" && currentString != ")" {
+			currentNode.Str = currentNode.Str + currentString
 		}
-		if stringValue == "(" && len(currentStr) > 0 {
-			if currentNode == nil {
-				currentNode = &QNode{
-					Previous: nil,
-					Str:      currentStr,
-				}
+		if currentString == "(" {
+			if len(currentNode.Str) == 0 {
+				currentNode.NeedsClosure = true
 			} else {
 				var newNode *QNode = &QNode{
-					Previous: currentNode,
-					Str:      currentStr,
+					Next:         nil,
+					Previous:     currentNode,
+					Str:          "",
+					NeedsClosure: true,
 				}
-				currentNode = newNode
+				currentNode.Next = newNode
+				currentNode = currentNode.Next
 			}
-			currentStr = ""
 		}
-		if stringValue == ")" {
-			if len(currentStr) > 0 {
-				if currentNode == nil {
-					currentNode = &QNode{
-						Previous: nil,
-						Str:      currentStr,
-					}
-				} else {
-					var newNode *QNode = &QNode{
-						Previous: currentNode,
-						Str:      currentStr,
-					}
-					currentNode = newNode
-				}
+
+		if currentString == ")" {
+			if currentNode.NeedsClosure {
 				currentNode.reverse()
 				if currentNode.Previous != nil {
 					var reversedString string = currentNode.Str
 					currentNode = currentNode.Previous
 					currentNode.Str = currentNode.Str + reversedString
 				}
-				currentStr = ""
-			} else {
-				if currentNode != nil {
-					currentNode.reverse()
-					var reversedString string = currentNode.Str
-					currentNode = currentNode.Previous
-					currentNode.Str = currentNode.Str + reversedString
-				} else {
-					return ""
-				}
 			}
 		}
 	}
-	if len(currentStr) > 0 {
-		var newNode *QNode = &QNode{
-			Previous: currentNode,
-			Str:      currentStr,
-		}
-		currentNode = newNode
-	}
-	var finalString string = ""
 	for currentNode != nil {
 		finalString = currentNode.Str + finalString
 		currentNode = currentNode.Previous
