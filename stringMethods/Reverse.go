@@ -19,7 +19,7 @@ func (qNode *QNode) reverse() {
 }
 
 func FilterStringsToReverse(str string) string {
-	var finalString string = ""
+	var nodeCount int = 1
 	var currentNode *QNode = &QNode{
 		Next:         nil,
 		Previous:     nil,
@@ -28,13 +28,19 @@ func FilterStringsToReverse(str string) string {
 	}
 	for index := range str {
 		var currentByte byte = str[index]
-		var currentString string = string(currentByte)
+		var currentString = string(currentByte)
+
 		if currentString != "(" && currentString != ")" {
+			if nodeCount == 1 {
+				nodeCount += 1
+			}
 			currentNode.Str = currentNode.Str + currentString
 		}
+
 		if currentString == "(" {
-			if len(currentNode.Str) == 0 {
+			if nodeCount == 1 {
 				currentNode.NeedsClosure = true
+				nodeCount += 1
 			} else {
 				var newNode *QNode = &QNode{
 					Next:         nil,
@@ -58,9 +64,6 @@ func FilterStringsToReverse(str string) string {
 			}
 		}
 	}
-	for currentNode != nil {
-		finalString = currentNode.Str + finalString
-		currentNode = currentNode.Previous
-	}
-	return finalString
+
+	return currentNode.Str
 }

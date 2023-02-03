@@ -27,6 +27,14 @@ func testReverse(testCase *testing.T) {
 	if result != expectedResult {
 		testCase.Errorf("expected %s to be %s", result, expectedResult)
 	}
+
+	testingString = "((eqk((h))))"
+	expectedResult = "eqkh"
+	result = stringMethods.FilterStringsToReverse(testingString)
+	if result != expectedResult {
+		testCase.Errorf("expected %s to be %s", result, expectedResult)
+	}
+
 }
 
 func TestReverse(testCase *testing.T) {
