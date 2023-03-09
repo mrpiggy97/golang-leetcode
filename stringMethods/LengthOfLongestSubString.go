@@ -15,8 +15,7 @@ func LengthOfLongestSubString(str string) int {
 				maxLength = index
 			}
 			if position+1 < len(str) {
-				var newStr string = str[position+1:]
-				str = newStr
+				str = str[position+1:]
 			}
 			checker = make(map[byte]int)
 			index = 0
