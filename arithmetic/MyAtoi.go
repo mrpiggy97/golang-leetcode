@@ -14,19 +14,14 @@ func MyAtoi(str string) int {
 		if currentByte > 47 && currentByte < 58 {
 			cleanStr = fmt.Sprintf("%s%s", cleanStr, string(currentByte))
 		} else {
-			if index == 0 {
-				if currentByte == 45 || currentByte == 43 {
-					if currentByte == 45 {
-						cleanStr = fmt.Sprintf("%s%s", string(currentByte), cleanStr)
-					}
-				} else {
-					break
+			if (currentByte == 45 || currentByte == 43) && index == 0 {
+				if currentByte == 45 {
+					cleanStr = fmt.Sprintf("%s%s", string(currentByte), cleanStr)
 				}
 			} else {
 				break
 			}
 		}
-
 	}
 	newNum, _ := strconv.Atoi(cleanStr)
 	if newNum < -2147483648 {
