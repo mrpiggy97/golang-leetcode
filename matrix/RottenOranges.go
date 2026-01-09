@@ -1,14 +1,12 @@
 package matrix
 
-import "fmt"
-
 func OrangesRotting(grid [][]int) int {
 	var minutes = 0
 	var outerIndex int = 0
+	var orangesTurned int = 0
+	var orangesFound int = 0
 	for outerIndex < len(grid) {
 		var currentSlice []int = grid[outerIndex]
-		var orangesTurned int = 0
-		var orangesFound int = 0
 		// loop through currentSlice
 		for i := 0; i < len(currentSlice); i++ {
 			// turn oranges
@@ -56,7 +54,6 @@ func OrangesRotting(grid [][]int) int {
 		outerIndex += 1
 		// we traversed all slices in grid
 		if outerIndex == len(grid) {
-			fmt.Println(grid)
 			// ends loop
 			if orangesFound > 0 && orangesTurned == 0 {
 				return -1
@@ -68,6 +65,8 @@ func OrangesRotting(grid [][]int) int {
 			// retarts loop
 			if orangesFound > 0 && orangesTurned > 0 {
 				outerIndex = 0
+				orangesFound = 0
+				orangesTurned = 0
 			}
 		}
 	}
